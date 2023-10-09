@@ -61,14 +61,20 @@
 
 <script setup>
 import { ref } from 'vue'
+import CalculadoraService from './services/CalculadoraService'; 
+import Swal from 'sweetalert2'
 
 const base = ref(0)
 const expoente = ref(0)
-
 const potencia = ref(null)
 
-function calcularPotencia() {
-    potencia.value = Math.pow(base.value, expoente.value)
+async function calcularPotencia() {
+    try {
+        const response = await CalculadoraService.potencia(base.value.toString(), expoente.value.toString())
+        potencia.value = response.data // Supondo que a resposta da API contém o resultado da potência
+    } catch (error) {
+        Swal.fire("Erro", `Ocorreu um erro ao calcular a potência: ${error.message}`, "error")
+    }
 }
 
 function limparReferencias() {
