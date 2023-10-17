@@ -1,18 +1,18 @@
 <template>
     <div class="position-absolute top-50 start-50 translate-middle border p-5 rounded">
         <h1 class="text-center">Cálculo de Potência</h1>
-
+    
         <form @submit.prevent="calcularPotencia()">
             <div class="col">
                 <label>Número Base</label>
-                <input type="number" name="base" id="base" class="form-control" v-model="base"/>
+                <input type="number" name="base" id="base" class="form-control" v-model="base" />
             </div>
-
+    
             <div class="col mt-3">
                 <label>Expoente</label>
-                <input type="number" name="expoente" id="expoente" class="form-control" v-model="expoente"/>
-            </div>
-
+                <input type="number" name="expoente" id="expoente" class="form-control" v-model="expoente" />
+                </div>
+    
             <div class="col text-center mt-3 d-grid gap-2">
                 <button type="submit" class="btn btn-success">Calcular</button>
                 <button type="button" @click="limparReferencias()" class="btn btn-danger">Limpar</button>
@@ -54,8 +54,9 @@
                 </div>
             </div>
         </form>
-
-        <h3 v-if="potencia != null" class="mt-3 text-center">A potência de {{ base }} elevado a {{ expoente }} é: {{ potencia }}</h3>
+        <h3 v-if="potencia != null" class="mt-3 text-center">
+            A potência de {{ base }} elevado a {{ expoente }} é: {{ potencia }}
+        </h3>
     </div>
 </template>
 
@@ -69,12 +70,12 @@ const expoente = ref(0)
 const potencia = ref(null)
 
 async function calcularPotencia() {
-    try {
-        const response = await CalculadoraService.potencia(base.value.toString(), expoente.value.toString())
-        potencia.value = response.data // Supondo que a resposta da API contém o resultado da potência
-    } catch (error) {
-        Swal.fire("Erro", `Ocorreu um erro ao calcular a potência: ${error.message}`, "error")
-    }
+    const service = new CalculadoraService()
+        service.potencia(base.value, expoente.value).then((response) => {
+            potencia.value = response.data
+        }, (error) => {
+            Swal.fire("Erro", error.response.data.mensagem, "error")
+        })
 }
 
 function limparReferencias() {
